@@ -4,6 +4,7 @@ import { UserAuth } from "@/contexts/authContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Signin() {
   const [email, setEmail] = useState("");
@@ -34,8 +35,23 @@ export default function Signin() {
   return (
     <div className="mt-20">
       <div className="px-2 flex flex-col gap-y-3 justify-center items-center">
+        <AnimatePresence>
+          <div className="relative w-full flex justify-center">
+            {authMessage && (
+              <motion.p
+                key="authMessage"
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.3 }}
+                className="text-xs bg-[#dee3f0] px-2 text-[#54596a] rounded text-center absolute bottom-1"
+              >
+                {authMessage.charAt(0).toUpperCase() + authMessage.slice(1)}
+              </motion.p>
+            )}
+          </div>
+        </AnimatePresence>
         <p>Signin</p>
-        {authMessage && <p className="text-xs bg-[#dee3f0] px-2 text-[#54596a] rounded text-center">{authMessage.charAt(0).toUpperCase() + authMessage.slice(1)}</p>}
         <form onSubmit={handleSignIn}>
           <div className="flex flex-col gap-y-2 w-full">
             <input
