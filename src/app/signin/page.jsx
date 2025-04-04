@@ -5,43 +5,37 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function Login() {
+export default function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const { isAuthenticated, login } = UserAuth();
+  const { isAuthenticated, authMessage, signin } = UserAuth();
 
   useEffect(() => {
     if (isAuthenticated === "authenticated") {
       router.push("/");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, authMessage]);
 
   async function handleSignIn(event) {
     event.preventDefault();
 
     setLoading(true);
-    setMessage("");
 
-    const response = await login(email, password);
-
-    if (response?.status === "error") {
-      setMessage(response.message);
-    } else if (response?.status === "success") {
-      setMessage(response.message);
+    const result = await signin(email, password);
+    if (result?.status === "success") {
+      router.push("/");
     }
-
     setLoading(false);
   }
 
   return (
     <div className="mt-20">
       <div className="px-2 flex flex-col gap-y-3 justify-center items-center">
-        <p>Login</p>
-        {message && <p className="text-xs bg-[#dee3f0] px-2 text-[#54596a] rounded text-center">{message.charAt(0).toUpperCase() + message.slice(1)}</p>}
+        <p>Signin</p>
+        {authMessage && <p className="text-xs bg-[#dee3f0] px-2 text-[#54596a] rounded text-center">{authMessage.charAt(0).toUpperCase() + authMessage.slice(1)}</p>}
         <form onSubmit={handleSignIn}>
           <div className="flex flex-col gap-y-2 w-full">
             <input

@@ -6,6 +6,7 @@ const AuthContext = createContext();
 
 export function AuthContextProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState("authenticating");
+  const [authMessage, setAuthMessage] = useState("");
 
   useEffect(() => {
     async function authUser() {
@@ -26,6 +27,16 @@ export function AuthContextProvider({ children }) {
     authUser();
   }, [isAuthenticated]);
 
+  useEffect(() => {
+    if (!authMessage) return;
+
+    const timeout = setTimeout(() => {
+      setAuthMessage("");
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, [authMessage]);
+
   async function signup(email, password) {
     try {
       const fetchResponse = await fetch("/api/auth/signup", {
@@ -35,18 +46,16 @@ export function AuthContextProvider({ children }) {
       });
 
       const response = await fetchResponse.json();
+      setAuthMessage(response.message);
       return response;
     } catch (error) {
-      return {
-        status: "error",
-        message: "something went wrong",
-      };
+      setAuthMessage("Something went wrong");
     }
   }
 
-  async function login(email, password) {
+  async function signin(email, password) {
     try {
-      const fetchResponse = await fetch("/api/auth/login", {
+      const fetchResponse = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -56,18 +65,15 @@ export function AuthContextProvider({ children }) {
       if (response.status === "success") {
         setIsAuthenticated("authenticated");
       }
-      return response;
+      setAuthMessage(response.message);
     } catch (error) {
-      return {
-        status: "error",
-        message: "something went wrong",
-      };
+      setAuthMessage("Something went wrong");
     }
   }
 
-  async function logout() {
+  async function signout() {
     try {
-      const fetchResponse = await fetch("/api/auth/logout", {
+      const fetchResponse = await fetch("/api/auth/signout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -79,14 +85,11 @@ export function AuthContextProvider({ children }) {
       }
       return response;
     } catch (error) {
-      return {
-        status: "error",
-        message: "something went wrong",
-      };
+      setAuthMessage("Something went wrong");
     }
   }
 
-  return <AuthContext value={{ isAuthenticated, signup, login, logout }}>{children}</AuthContext>;
+  return <AuthContext value={{ isAuthenticated, authMessage, signup, signin, signout }}>{children}</AuthContext>;
 }
 
 export function UserAuth() {

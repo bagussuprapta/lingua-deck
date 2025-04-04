@@ -6,28 +6,28 @@ import { useRouter } from "next/navigation";
 
 import { UserAuth } from "@/contexts/authContext";
 
-export default function Register() {
+export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
   const router = useRouter();
 
-  const { isAuthenticated, signup } = UserAuth();
+  const { isAuthenticated, authMessage, signup } = UserAuth();
 
   useEffect(() => {
     if (isAuthenticated === "authenticated") {
       router.push("/");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, authMessage]);
 
-  async function handleRegister(event) {
+  async function handleSignup(event) {
     event.preventDefault();
     setLoading(true);
-    const response = await signup(email, password);
-
-    setMessage(response.message);
+    const result = await signup(email, password);
     setLoading(false);
+    if (result?.status === "success") {
+      router.push("/signin");
+    }
   }
 
   return (
@@ -35,8 +35,8 @@ export default function Register() {
       <div className="mt-20">
         <div className="px-2 flex flex-col gap-y-3 justify-center items-center">
           <p>Signup</p>
-          {message && <p className="text-xs bg-[#dee3f0] px-2 text-[#54596a] rounded text-center">{message.charAt(0).toUpperCase() + message.slice(1)}</p>}
-          <form onSubmit={handleRegister}>
+          {authMessage && <p className="text-xs bg-[#dee3f0] px-2 text-[#54596a] rounded text-center">{authMessage.charAt(0).toUpperCase() + authMessage.slice(1)}</p>}
+          <form onSubmit={handleSignup}>
             <div className="flex flex-col gap-y-2 w-full">
               <input
                 onChange={(e) => {
@@ -64,7 +64,7 @@ export default function Register() {
           <div>
             <p className="text-center font-nunito">or</p>
             <Link href="/signin" className="text-stone-500 hover:text-stone-800 ">
-              Login
+              Signin
             </Link>
           </div>
         </div>
