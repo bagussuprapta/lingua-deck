@@ -1,6 +1,9 @@
 import { Geist_Mono, Nunito } from "next/font/google";
 import "./globals.css";
 
+import { AuthContextProvider } from "@/contexts/authContext";
+import Navbar from "@/components/Navbar";
+
 const nunito = Nunito({
   variable: "--font-nunito",
   subsets: ["latin"],
@@ -25,7 +28,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${nunito.variable} ${geistMono.variable}`}>{children}</body>
+      <body className={`${nunito.variable} ${geistMono.variable} text-sm`}>
+        <AuthContextProvider>
+          <Navbar></Navbar>
+          {children}
+        </AuthContextProvider>
+      </body>
     </html>
   );
 }
