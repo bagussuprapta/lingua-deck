@@ -6,14 +6,17 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { UserAuth } from "@/contexts/authContext";
+import { validator } from "@/validations/validator";
+import { signupUserValidation } from "@/validations/userValidation";
 
 export default function Signup() {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const { isAuthenticated, authMessage, signup } = UserAuth();
+  const { isAuthenticated, authMessage, setAuthMessage, signup } = UserAuth();
 
   useEffect(() => {
     if (isAuthenticated === "authenticated") {
@@ -22,12 +25,29 @@ export default function Signup() {
   }, [isAuthenticated, authMessage]);
 
   async function handleSignup(event) {
-    event.preventDefault();
-    setLoading(true);
-    const result = await signup(email, password);
-    setLoading(false);
-    if (result?.status === "success") {
-      router.push("/signin");
+    try {
+      event.preventDefault();
+      setLoading(true);
+
+      if (!username || !email || !password) {
+        setAuthMessage("all fields need to be filled");
+        return;
+      }
+
+      const validatedData = validator(signupUserValidation, { username, email, password });
+
+      const result = await signup(...Object.values(validatedData));
+      if (result?.status === "success") {
+        router.push("/signin");
+      }
+    } catch (error) {
+      if (error.message) {
+        setAuthMessage(error.message);
+      } else {
+        setAuthMessage("something went wrong, please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -52,6 +72,14 @@ export default function Signup() {
       <p>Signup</p>
       <form onSubmit={handleSignup}>
         <div className="flex flex-col gap-y-2 w-full">
+          <input
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
+            type="text"
+            placeholder="username"
+            className="border bg-white text-center font-mono text-xs w-full py-1 rounded-lg outline-none px-2"
+          />
           <input
             onChange={(e) => {
               setEmail(e.target.value);

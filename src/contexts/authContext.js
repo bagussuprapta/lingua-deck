@@ -37,12 +37,12 @@ export function AuthContextProvider({ children }) {
     return () => clearTimeout(timeout);
   }, [authMessage]);
 
-  async function signup(email, password) {
+  async function signup(username, email, password) {
     try {
       const fetchResponse = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, email, password }),
       });
 
       const response = await fetchResponse.json();
@@ -89,7 +89,7 @@ export function AuthContextProvider({ children }) {
     }
   }
 
-  return <AuthContext value={{ isAuthenticated, authMessage, signup, signin, signout }}>{children}</AuthContext>;
+  return <AuthContext value={{ isAuthenticated, authMessage, setAuthMessage, signup, signin, signout }}>{children}</AuthContext>;
 }
 
 export function UserAuth() {
