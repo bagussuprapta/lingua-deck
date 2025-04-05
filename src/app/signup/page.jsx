@@ -52,7 +52,7 @@ export default function Signup() {
   }
 
   return (
-    <div className="mt-20 px-2 flex flex-col gap-y-3 justify-center items-center">
+    <div className="pt-24 px-2 flex flex-col gap-y-3 justify-center items-center">
       <AnimatePresence>
         <div className="relative w-full flex justify-center">
           {authMessage && (

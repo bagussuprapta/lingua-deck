@@ -35,7 +35,7 @@ export default function Navbar() {
   if (!hydrated) return null;
 
   return (
-    <motion.header initial={baseInitial} animate={createSpringAnimate()} exit={baseExit} className="w-full px-2 md:px-48 mt-4 font-nunito text-white">
+    <motion.header initial={baseInitial} animate={createSpringAnimate()} exit={baseExit} className="w-full px-2 md:px-48 mt-4 font-nunito text-white fixed">
       <div className="flex gap-x-4 justify-between border-b-4 border-[#232222] bg-[#a4b9b5] rounded-2xl border-2 px-4 py-3">
         <div className="flex gap-x-4">
           <motion.p initial={baseInitial} animate={createSpringAnimate(0.2)} exit={baseExit}>
