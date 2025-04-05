@@ -2,7 +2,7 @@ import { Geist_Mono, Nunito } from "next/font/google";
 import "./globals.css";
 
 import { AuthContextProvider } from "@/contexts/authContext";
-import Navbar from "@/components/Navbar";
+import AppLayout from "@/components/AppLayout";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -30,8 +30,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${nunito.variable} ${geistMono.variable} text-sm`}>
         <AuthContextProvider>
-          <Navbar></Navbar>
-          {children}
+          <AppLayout>{children}</AppLayout>
         </AuthContextProvider>
       </body>
     </html>
