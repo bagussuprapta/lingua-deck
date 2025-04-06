@@ -7,6 +7,7 @@ const AuthContext = createContext();
 export function AuthContextProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState("authenticating");
   const [authMessage, setAuthMessage] = useState("");
+  const [userSession, setUserSession] = useState({});
 
   useEffect(() => {
     async function authUser() {
@@ -18,6 +19,7 @@ export function AuthContextProvider({ children }) {
           setIsAuthenticated("not-authenticated");
         } else if (response?.status === "success") {
           setIsAuthenticated("authenticated");
+          setUserSession(response.data);
         }
       } catch (error) {
         setIsAuthenticated("not-authenticated");
@@ -89,7 +91,7 @@ export function AuthContextProvider({ children }) {
     }
   }
 
-  return <AuthContext value={{ isAuthenticated, authMessage, setAuthMessage, signup, signin, signout }}>{children}</AuthContext>;
+  return <AuthContext value={{ isAuthenticated, authMessage, userSession, setAuthMessage, signup, signin, signout }}>{children}</AuthContext>;
 }
 
 export function UserAuth() {

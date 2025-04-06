@@ -8,7 +8,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-nunito: var(--font-nunito);
+  --font-nunito: "Nunito", sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
@@ -22,5 +22,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-nunito), var(--font-mono), Arial, Helvetica, sans-serif;
+  font-family: var(--font-base), sans-serif;
 }

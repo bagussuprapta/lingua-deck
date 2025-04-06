@@ -27,8 +27,15 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${nunito.variable} ${geistMono.variable} text-sm`}>
+    <html
+      lang="en"
+      className={`${nunito.variable} ${geistMono.variable}`}
+      style={{
+        "--font-base": "var(--font-nunito)",
+        "--font-mono": "var(--font-geist-mono)",
+      }}
+    >
+      <body className="text-sm">
         <AuthContextProvider>
           <AppLayout>{children}</AppLayout>
         </AuthContextProvider>
