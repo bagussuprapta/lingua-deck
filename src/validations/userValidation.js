@@ -12,4 +12,9 @@ const signupUserValidation = zod.object({
   password: zod.string().min(6, { message: "must be at least 6 characters" }),
 });
 
-export { signupUserValidation };
+const signinUserValidation = zod.object({
+  email: zod.string().email({ message: "invalid email address" }),
+  password: zod.string().min(6, { message: "must be at least 6 characters" }),
+});
+
+export { signupUserValidation, signinUserValidation };

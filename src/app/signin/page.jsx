@@ -6,13 +6,16 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
+import { validator } from "@/validations/validator";
+import { signinUserValidation } from "@/validations/userValidation";
+
 export default function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const { isAuthenticated, authMessage, signin } = UserAuth();
+  const { isAuthenticated, authMessage, setAuthMessage, signin } = UserAuth();
 
   useEffect(() => {
     if (isAuthenticated === "authenticated") {
@@ -21,15 +24,30 @@ export default function Signin() {
   }, [isAuthenticated, authMessage]);
 
   async function handleSignIn(event) {
-    event.preventDefault();
+    try {
+      event.preventDefault();
+      setLoading(true);
 
-    setLoading(true);
+      if (!email || !password) {
+        setAuthMessage("all fields need to be filled");
+        return;
+      }
 
-    const result = await signin(email, password);
-    if (result?.status === "success") {
-      router.push("/");
+      const validatedData = validator(signinUserValidation, { email, password });
+
+      const result = await signin(...Object.values(validatedData));
+      if (result?.status === "success") {
+        router.push("/");
+      }
+    } catch (error) {
+      if (error.message) {
+        setAuthMessage(error.message);
+      } else {
+        setAuthMessage("something went wrong, please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
